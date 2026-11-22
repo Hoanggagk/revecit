@@ -1,0 +1,32 @@
+\begin{table}[!t]
+% TODO: Bổ sung learning rate của Actor/Critic, minibatch size,
+% entropy coefficient và value coefficient theo đúng mã huấn luyện.
+\caption{Các siêu tham số huấn luyện PPO}
+\label{tab:ppo-hyperparameters}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{p{0.66\columnwidth}p{0.24\columnwidth}}
+\toprule
+\textbf{Tham số} & \textbf{Giá trị} \\
+\midrule
+Tổng số timestep huấn luyện             & $500{,}000$ \\
+Số timestep tối đa mỗi episode          & $400$ \\
+Chu kỳ điều khiển $\Delta t$             & $0.05\,\text{s}$ \\
+Tần suất cập nhật PPO                   & $2000$ timestep \\
+Tốc độ học của actor                    & $3 \times 10^{-4}$ \\
+Tốc độ học của critic                   & $1 \times 10^{-3}$ \\
+Số epoch cập nhật $K$                    & $5$ \\
+Hệ số chiết khấu $\gamma$                & $0.99$ \\
+Tham số GAE $\lambda$                    & $0.95$ \\
+Hệ số clipping $\epsilon$                & $0.2$ \\
+Độ lệch chuẩn hành động ban đầu         & $1.0$ \\
+Độ lệch chuẩn hành động tối thiểu       & $0.1$ \\
+Bước giảm độ lệch chuẩn                 & $0.01$ \\
+Chu kỳ giảm độ lệch chuẩn               & $50$ episode \\
+Số nơ-ron mỗi lớp ẩn                    & $64$ \\
+Số lớp ẩn Actor/Critic                  & $2$ \\
+Hàm kích hoạt                           & Tanh \\
+\bottomrule
+\end{tabular}
+\end{table}

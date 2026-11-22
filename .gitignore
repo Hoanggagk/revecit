@@ -1,0 +1,38 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+
+# Optional build directories
+/build/
+/latex.out/
+
+# Backups and editor temporary files
+*.bak
+*.tmp
+*.swp
+*.swo
+*~
+
+# Local editor settings
+.idea/
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

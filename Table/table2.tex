@@ -1,0 +1,23 @@
+\begin{table}[!t]
+\caption{So sánh kết quả giữa MoveOnPath và PPO}
+\label{tab:baseline-ppo-comparison}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Bộ điều khiển} &
+\textbf{Thời gian (s)} &
+\textbf{RMSE (m)} &
+\textbf{MAE (m)} &
+$\boldsymbol{\mathrm{RMSE}_{x}}$ \textbf{(m)} &
+$\boldsymbol{\mathrm{RMSE}_{y}}$ \textbf{(m)} &
+$\boldsymbol{\mathrm{RMSE}_{z}}$ \textbf{(m)} \\
+\midrule
+MoveOnPath & 36.34 & 0.186 & 0.160 & 0.088 & 0.090 & 0.137 \\
+PPO      & 17.34 & 0.105 & 0.073 & 0.068 & 0.031 & 0.074 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
