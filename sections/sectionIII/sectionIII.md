@@ -1,15 +1,15 @@
-# Thiết kế bộ điều khiển ứng dụng thuật toán PPO
+# Thiết kế phương pháp điều khiển dựa trên PPO
 
 <figure id="fig:ppo-architecture" data-latex-placement="H">
-<img src="../../Figure/image2.png" />
+<img src="../../Figure/image2-method.png" />
 <figcaption>Kiến trúc điều khiển cho bài toán bám quỹ đạo của quadcopter.</figcaption>
 </figure>
 
-Kiến trúc điều khiển được trình bày trong Hình [2](#fig:ppo-architecture). Trong đó tác nhân PPO đóng vai trò bộ điều khiển cấp cao, sử dụng thông tin trạng thái của quadcopter và quỹ đạo tham chiếu làm đầu vào để tính toán và trả về lệnh vận tốc theo hệ tọa độ NED. Các lệnh vận tốc này được truyền tới bộ điều khiển bay tích hợp trong ProjectAirSim, nơi thực hiện các vòng điều khiển cấp thấp. Trong quá trình hoạt động, các trạng thái chuyển động gồm vị trí, vận tốc, góc Euler và vận tốc góc sẽ luôn được cập nhật và phản hồi về bộ điều khiển PPO từ đó hình thành vòng điều khiển kín.
+Kiến trúc điều khiển được trình bày trong Hình [2](#fig:ppo-architecture). Trong đó phương pháp điều khiển dựa trên PPO sử dụng thông tin trạng thái của quadcopter và quỹ đạo tham chiếu làm đầu vào. Chính sách Actor của PPO tính toán và trả về lệnh vận tốc theo hệ tọa độ NED. Các lệnh vận tốc này được truyền tới bộ điều khiển bay tích hợp trong ProjectAirSim, nơi thực hiện các vòng điều khiển cấp thấp. Trong quá trình hoạt động, các trạng thái chuyển động gồm vị trí, vận tốc, góc Euler và vận tốc góc sẽ luôn được cập nhật và phản hồi về phương pháp điều khiển dựa trên PPO, từ đó hình thành vòng điều khiển kín.
 
 ## Thiết kế không gian trạng thái
 
-Không gian trạng thái được thiết kế nhằm cung cấp cho tác nhân PPO các thông tin cần thiết để hoàn thành bài toán. Trạng thái của quadcopter được biểu diễn bởi vectơ
+Không gian trạng thái được thiết kế nhằm cung cấp cho chính sách Actor của PPO các thông tin cần thiết để hoàn thành bài toán. Trạng thái của quadcopter được biểu diễn bởi vectơ
 
 $$
 \begin{aligned}
@@ -40,7 +40,7 @@ Trong đó:
 
 ## Thiết kế không gian hành động
 
-Không gian hành động của tác nhân PPO được thiết kế dưới dạng không gian liên tục (continuous action space). Vectơ hành động gồm ba thành phần:
+Không gian hành động của chính sách Actor của PPO được thiết kế dưới dạng không gian liên tục (continuous action space). Vectơ hành động gồm ba thành phần:
 
 $$
 \mathbf{a}_t = \left[v_N^{\mathrm{cmd}}, v_E^{\mathrm{cmd}}, v_D^{\mathrm{cmd}}\right]^{\mathsf{T}}.
@@ -48,7 +48,7 @@ $$
 
 Trong đó, $v_N^{\mathrm{cmd}}$, $v_E^{\mathrm{cmd}}$, và $v_D^{\mathrm{cmd}}$ lần lượt là các lệnh vận tốc mong muốn theo ba trục North, East, và Down của hệ tọa độ NED.
 
-Trong nghiên cứu này, tác nhân PPO không trực tiếp gửi lệnh lực đẩy, mô-men điều khiển, hoặc tốc độ quay của từng rotor. Thay vào đó, chính sách đã học tính toán và gửi lệnh vận tốc đến bộ điều khiển bay tích hợp trong ProjectAirSim để điều khiển quadcopter. Vì vậy, bộ điều khiển PPO được xem là một chính sách sinh lệnh vận tốc mức cao (high-level velocity-command policy), trong khi việc ổn định tư thế và chuyển đổi lệnh vận tốc thành các tác động điều khiển mức thấp được thực hiện bởi bộ điều khiển bay bên trong môi trường mô phỏng.
+Trong nghiên cứu này, chính sách Actor của PPO không trực tiếp gửi lệnh lực đẩy, mô-men điều khiển, hoặc tốc độ quay của từng rotor. Thay vào đó, sau huấn luyện, chính sách Actor tính toán và gửi lệnh vận tốc đến bộ điều khiển bay tích hợp trong ProjectAirSim để điều khiển quadcopter. Trong bài báo, cấu trúc gồm chính sách Actor sinh lệnh vận tốc cấp cao và bộ điều khiển bay tích hợp thực hiện điều khiển cấp thấp được gọi chung là phương pháp điều khiển dựa trên PPO (PPO-based control method).
 
 Để bảo đảm tín hiệu điều khiển nằm trong phạm vi phù hợp, mỗi thành phần hành động được giới hạn bởi
 
@@ -56,11 +56,11 @@ $$
 v_N^{\mathrm{cmd}}, v_E^{\mathrm{cmd}}, v_D^{\mathrm{cmd}} \in [-3.0, 3.0]~\mathrm{m/s}.
 $$
 
-Giới hạn này được triển khai bằng lớp `Box` của thư viện Gymnasium, bảo đảm rằng các lệnh vận tốc do tác nhân sinh ra không vượt quá phạm vi đã thiết lập trong quá trình huấn luyện và thử nghiệm. Quá trình tương tác giữa tác nhân PPO và môi trường mô phỏng được thực hiện theo cơ chế lock-step với bước thời gian cố định $\Delta t = 0.05$ s, tương ứng với tần số điều khiển $f_c = 1/\Delta t = 20$ Hz.
+Giới hạn này được triển khai bằng lớp `Box` của thư viện Gymnasium, bảo đảm rằng các lệnh vận tốc do chính sách Actor của PPO sinh ra không vượt quá phạm vi đã thiết lập trong quá trình huấn luyện và thử nghiệm. Quá trình huấn luyện thuật toán PPO trong môi trường mô phỏng được thực hiện theo cơ chế lock-step với bước thời gian cố định $\Delta t = 0.05$ s, tương ứng với tần số điều khiển $f_c = 1/\Delta t = 20$ Hz.
 
 ## Thiết kế hàm phần thưởng
 
-Để tác nhân học được cách hoàn thành bài toán, hàm phần thưởng gồm bốn thành phần sau:
+Để huấn luyện thuật toán PPO hoàn thành bài toán, hàm phần thưởng gồm bốn thành phần sau:
 
 $$
 R_{\mathrm{sum}} = r_{\mathrm{waypoint}} + r_{\mathrm{penalty}} + r_{\mathrm{approach}} + r_{\mathrm{align}}.
@@ -90,11 +90,11 @@ r_{\mathrm{waypoint}} =\!
  \end{cases}
 $$
 
-Trong đó, $\mathbf{p}_t \in \mathbb{R}^3$ là vị trí của quadcopter tại thời điểm $t$, $\boldsymbol{\omega}_i \in \mathbb{R}^3$ là waypoint thứ $i$, $T_{\max}$ là số bước tối đa của một episode, $r_{\omega}$ là bán kính xác định quadcopter hoàn thành waypoint, và $d(\mathbf{p}_t, \boldsymbol{\omega}_i)= \left\|\mathbf{p}_t - \boldsymbol{\omega}_i\right\|_2$ là khoảng cách Euclid giữa quadcopter và waypoint mục tiêu. Quadcopter được xác định là đã hoàn thành waypoint mục tiêu khi $d(\mathbf{p}_t, \boldsymbol{\omega}_i) < r_{\omega}$. Khi điều khiển quadcopter đến waypoint trung gian, tác nhân nhận một phần thưởng dương. Nếu hoàn thành waypoint cuối cùng trước khi hết số bước tối đa của episode, tác nhân nhận thêm phần thưởng phụ thuộc vào số bước thời gian còn lại.
+Trong đó, $\mathbf{p}_t \in \mathbb{R}^3$ là vị trí của quadcopter tại thời điểm $t$, $\boldsymbol{\omega}_i \in \mathbb{R}^3$ là waypoint thứ $i$, $T_{\max}$ là số bước tối đa của một episode, $r_{\omega}$ là bán kính xác định quadcopter hoàn thành waypoint, và $d(\mathbf{p}_t, \boldsymbol{\omega}_i)= \left\|\mathbf{p}_t - \boldsymbol{\omega}_i\right\|_2$ là khoảng cách Euclid giữa quadcopter và waypoint mục tiêu. Quadcopter được xác định là đã hoàn thành waypoint mục tiêu khi $d(\mathbf{p}_t, \boldsymbol{\omega}_i) < r_{\omega}$. Khi quadcopter đến waypoint trung gian, hàm phần thưởng trả về một giá trị dương. Nếu quadcopter hoàn thành waypoint cuối cùng trước khi hết số bước tối đa của episode, hàm phần thưởng trả về thêm phần thưởng phụ thuộc vào số bước thời gian còn lại.
 
 ### Phạt vi phạm điều kiện an toàn
 
-Tại mỗi bước thời gian, nếu episode kết thúc sớm do quadcopter va chạm với mặt đất, bị lật, hoặc cách waypoint mục tiêu quá xa, tác nhân bị phạt một giá trị âm lớn:
+Tại mỗi bước thời gian, nếu episode kết thúc sớm do quadcopter va chạm với mặt đất, bị lật, hoặc cách waypoint mục tiêu quá xa, thuật toán PPO nhận một giá trị phạt âm lớn trong quá trình huấn luyện:
 
 $$
 r_{\mathrm{penalty}} = -30.
@@ -113,7 +113,7 @@ r_{\mathrm{approach}} = \max\left\{0,\;5.0\left[
  \right]\right\}.
 $$
 
-Trong đó, $d(\mathbf{p}_{t-1}, \boldsymbol{\omega}_i)$ và $d(\mathbf{p}_t, \boldsymbol{\omega}_i)$ lần lượt là khoảng cách từ quadcopter đến waypoint thứ $i$ tại các thời điểm $t-1$ và $t$. Phần thưởng tiếp cận waypoint $r_{\mathrm{approach}}$ được thiết kế nhằm khuyến khích quadcopter giảm khoảng cách tới waypoint hiện tại sau mỗi bước thời gian. Theo đó, tác nhân nhận phần thưởng khi khoảng cách tới waypoint hiện tại giảm so với bước thời gian trước; ngược lại, thành phần này bằng $0$ khi quadcopter không tiến gần waypoint.
+Trong đó, $d(\mathbf{p}_{t-1}, \boldsymbol{\omega}_i)$ và $d(\mathbf{p}_t, \boldsymbol{\omega}_i)$ lần lượt là khoảng cách từ quadcopter đến waypoint thứ $i$ tại các thời điểm $t-1$ và $t$. Phần thưởng tiếp cận waypoint $r_{\mathrm{approach}}$ được thiết kế nhằm khuyến khích quadcopter giảm khoảng cách tới waypoint hiện tại sau mỗi bước thời gian. Theo đó, thành phần này nhận giá trị dương khi khoảng cách tới waypoint hiện tại giảm so với bước thời gian trước; ngược lại, thành phần này bằng $0$ khi quadcopter không tiến gần waypoint.
 
 ### Phần thưởng hiệu chỉnh vận tốc
 
@@ -129,6 +129,6 @@ Trong đó $\mathbf{v}_t \in \mathbb{R}^3$ là vectơ vận tốc tuyến tính 
 
 ## Mạng Actor–Critic
 
-Bộ điều khiển vận tốc mức cao được xây dựng dựa trên thuật toán Proximal Policy Optimization (PPO) \[20\] với kiến trúc Actor–Critic. Trong đó, mạng Actor thực hiện ánh xạ trạng thái hiện tại của quadcopter thành lệnh vận tốc mong muốn, trong khi mạng Critic ước lượng giá trị của trạng thái nhằm hỗ trợ quá trình cập nhật chính sách.
+Thuật toán Proximal Policy Optimization (PPO) \[20\] được huấn luyện với kiến trúc Actor–Critic. Trong quá trình huấn luyện, mạng Actor thực hiện ánh xạ trạng thái hiện tại của quadcopter thành lệnh vận tốc mong muốn, trong khi mạng Critic ước lượng giá trị của trạng thái nhằm hỗ trợ quá trình cập nhật chính sách. Sau huấn luyện, chính sách Actor của PPO được triển khai trong phương pháp điều khiển dựa trên PPO để sinh lệnh vận tốc NED.
 
 Cả Actor và Critic đều nhận vectơ trạng thái $\mathbf{s}_t \in \mathbb{R}^{15}$ được xác định trong Phần [II](#sec:problem-formulation) làm đầu vào. Trước khi đưa vào mạng, các thành phần trạng thái được chuẩn hóa nhằm hạn chế ảnh hưởng của sự khác biệt về thang đo giữa các biến quan sát. Mỗi mạng gồm hai lớp ẩn fully connected, mỗi lớp có 64 nơ-ron và sử dụng hàm kích hoạt Tanh.

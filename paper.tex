@@ -41,13 +41,7 @@ email: Vinhhoang2001k60@gmail.com}
 \maketitle
 
 \begin{abstract}
-Bài báo này trình bày phương pháp điều khiển bám quỹ đạo waypoint cho quadcopter ứng dụng thuật toán Proximal 
-Policy Optimization (PPO). Tác nhân PPO được xây dựng theo kiến trúc Actor--Critic, với trạng thái đầu vào 
-gồm sai lệch vị trí tới waypoint hiện tại và kế tiếp, vận tốc tuyến tính, tư thế và vận tốc góc của quadcopter; 
-đầu ra của chính sách là các lệnh vận tốc theo hệ tọa độ North--East--Down. Hàm phần thưởng gồm bốn thành phần: phần thưởng đạt waypoint, phần phạt vi phạm điều kiện an toàn, phần thưởng tiếp cận waypoint và phần thưởng căn chỉnh hướng vận tốc. Tác nhân được huấn luyện, đánh giá trong môi trường ProjectAirSim trên quỹ đạo hình vuông gồm chuỗi 
-waypoint và phương pháp MoveOnPath sử dụng thuật toán carrot-following được sử dụng làm  tham chiếu. Kết quả mô phỏng cho thấy tác nhân PPO học cách điều khiển quadcopter bám quỹ đạo thành công
-,và có đáp ứng vị trí nhanh hơn và đạt sai số bám quỹ đạo thấp hơn phương pháp tham chiếu trong điều kiện khảo sát. Tuy nhiên, đáp ứng tư thế của PPO biến 
-lớn hơn  đặc biệt tại các vị trí cần quadcopter chuyển hướng.
+Bài báo này trình bày phương pháp điều khiển dựa trên Proximal Policy Optimization (PPO) cho bài toán bám quỹ đạo waypoint của quadcopter. Thuật toán PPO sử dụng kiến trúc Actor--Critic, với trạng thái đầu vào gồm sai lệch vị trí tới waypoint hiện tại và kế tiếp, vận tốc tuyến tính, tư thế và vận tốc góc của quadcopter; sau huấn luyện, chính sách Actor của PPO sinh các lệnh vận tốc theo hệ tọa độ North--East--Down. Hàm phần thưởng gồm bốn thành phần: phần thưởng đạt waypoint, phần phạt vi phạm điều kiện an toàn, phần thưởng tiếp cận waypoint và phần thưởng căn chỉnh hướng vận tốc. Thuật toán PPO được huấn luyện trong môi trường ProjectAirSim trên quỹ đạo hình vuông gồm chuỗi waypoint. Phương pháp điều khiển dựa trên PPO được đánh giá với phương pháp điều khiển MoveOnPath có sẵn trong ProjectAirSim làm tham chiếu. Kết quả mô phỏng cho thấy phương pháp điều khiển dựa trên PPO điều khiển quadcopter bám quỹ đạo thành công, có đáp ứng vị trí nhanh hơn và đạt sai số bám quỹ đạo thấp hơn phương pháp điều khiển MoveOnPath trong điều kiện khảo sát. Tuy nhiên, đáp ứng tư thế của phương pháp điều khiển dựa trên PPO biến thiên lớn hơn, đặc biệt tại các vị trí cần quadcopter chuyển hướng.
 \end{abstract}
 
 \begin{IEEEkeywords}

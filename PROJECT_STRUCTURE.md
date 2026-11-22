@@ -35,6 +35,8 @@ revecit/
 ├── Figure/                            # Hình ảnh được sử dụng trong bài báo
 │   ├── image.png
 │   ├── image2.png
+│   ├── image2-method.png              # Sơ đồ kiến trúc dùng thuật ngữ đã thống nhất
+│   ├── image2-terminology.png         # Phiên bản hình thuật ngữ trước đó
 │   ├── Picture1.png
 │   ├── Picture11.png
 │   ├── Picture 2a.png
